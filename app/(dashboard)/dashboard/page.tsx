@@ -84,8 +84,17 @@ export default function DashboardPage() {
           </Link>
           
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" onClick={toggleDebug}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={toggleDebug}
+              className={`${isDebugVisible ? 'bg-primary/10 text-primary' : ''} hover:bg-primary/10 transition-colors relative`}
+              title="Toggle Cursor Debug Panel"
+            >
               <Bug className="h-4 w-4" />
+              {isDebugVisible && (
+                <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+              )}
             </Button>
             <Button variant="ghost" size="sm">
               <Bell className="h-4 w-4" />
