@@ -1,17 +1,21 @@
-# BasePlus - Modern SaaS Platform
+# 🚀 BasePlus - Modern Micro-SaaS Platform
 
-A modern, scalable SaaS platform built for solo developers with everything you need to launch your product quickly.
+A production-ready SaaS platform built for solo developers with everything you need to launch your product quickly. Features Cursor integration for self-debugging capabilities.
 
-## 🚀 Features
+[![CI/CD](https://github.com/smithmw7/baseplus-saas/actions/workflows/ci.yml/badge.svg)](https://github.com/smithmw7/baseplus-saas/actions/workflows/ci.yml)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/smithmw7/baseplus-saas)
 
-- **Authentication** - NextAuth.js with social login (Google, GitHub)
-- **Database** - PostgreSQL with Prisma ORM
-- **Payments** - Stripe integration for subscriptions
-- **UI/UX** - Modern design with Tailwind CSS and shadcn/ui
-- **Type Safety** - Full TypeScript support
-- **Team Management** - Organization and role-based access
-- **Analytics** - Usage tracking and monitoring
-- **Deployment** - Optimized for Vercel
+## ✨ Features
+
+- **🔐 Authentication** - NextAuth.js with social login (Google, GitHub)
+- **💾 Database** - PostgreSQL with Prisma ORM
+- **💳 Payments** - Stripe integration for subscriptions
+- **🎨 UI/UX** - Modern design with Tailwind CSS and shadcn/ui
+- **🔧 Type Safety** - Full TypeScript support
+- **👥 Team Management** - Organization and role-based access
+- **📊 Analytics** - Usage tracking and monitoring
+- **🚀 Deployment** - Optimized for Vercel
+- **🐛 Cursor Integration** - Self-debugging capabilities
 
 ## 🛠 Tech Stack
 
@@ -21,55 +25,62 @@ A modern, scalable SaaS platform built for solo developers with everything you n
 - **Authentication**: NextAuth.js
 - **Payments**: Stripe
 - **State Management**: TanStack Query, Zustand
+- **Caching**: Upstash Redis
+- **Email**: Resend
+- **Analytics**: Vercel Analytics
+- **Error Tracking**: Sentry
 - **Deployment**: Vercel
-- **Monitoring**: Sentry (optional)
 
-## 📦 Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL database
 - Stripe account
-- Google/GitHub OAuth apps (optional)
+- GitHub account (for OAuth)
 
-### Installation
+### 1. Clone the Repository
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd baseplus-saas
-   ```
+```bash
+git clone https://github.com/smithmw7/baseplus-saas.git
+cd baseplus-saas
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Install Dependencies
 
-3. **Set up environment variables**
-   ```bash
-   cp env.example .env.local
-   ```
-   
-   Edit `.env.local` with your configuration:
-   - Database URL
-   - NextAuth secret
-   - OAuth provider credentials
-   - Stripe keys
+```bash
+npm install
+```
 
-4. **Set up the database**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+### 3. Set Up Environment Variables
 
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+```bash
+cp env.example .env.local
+```
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+Edit `.env.local` with your configuration:
+- Database URL
+- NextAuth secret
+- OAuth provider credentials
+- Stripe keys
+- Redis configuration
+- Email service
+
+### 4. Set Up the Database
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 5. Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🔧 Development
 
@@ -98,6 +109,7 @@ A modern, scalable SaaS platform built for solo developers with everything you n
 │   └── page.tsx           # Home page
 ├── components/            # React components
 │   ├── ui/               # shadcn/ui components
+│   ├── debug/            # Cursor debug components
 │   ├── auth/             # Authentication components
 │   ├── dashboard/        # Dashboard components
 │   └── providers.tsx     # Context providers
@@ -105,12 +117,35 @@ A modern, scalable SaaS platform built for solo developers with everything you n
 │   ├── auth.ts           # NextAuth configuration
 │   ├── db.ts             # Database utilities
 │   ├── stripe.ts         # Stripe utilities
+│   ├── redis.ts          # Redis utilities
+│   ├── email.ts          # Email utilities
+│   ├── analytics.ts      # Analytics utilities
+│   ├── cursor-debug.ts   # Cursor integration
 │   └── utils.ts          # General utilities
 ├── hooks/                # Custom React hooks
-├── types/                # TypeScript type definitions
 ├── prisma/               # Database schema and migrations
+├── scripts/              # Setup and utility scripts
 └── public/               # Static assets
 ```
+
+## 🐛 Cursor Integration
+
+This project includes Cursor integration for self-debugging capabilities:
+
+### Features
+- **Real-time monitoring** - Debug panel shows live logs
+- **Error detection** - Automatic error capture and analysis
+- **Context awareness** - Cursor understands your app state
+- **Auto-fixing** - Cursor can fix common issues
+- **Performance tracking** - Monitor bottlenecks
+
+### Setup
+1. Add the debug panel to your app layout
+2. Expose debug data globally for Cursor
+3. Start development server
+4. Cursor can now monitor and debug your app
+
+See [MICRO-SAAS-GUIDE.md](./MICRO-SAAS-GUIDE.md) for detailed instructions.
 
 ## 🔐 Authentication
 
@@ -155,10 +190,12 @@ Stripe integration is included for handling:
 
 ### Vercel (Recommended)
 
-1. Push your code to GitHub
+1. Fork this repository
 2. Connect your repository to Vercel
 3. Add environment variables in Vercel dashboard
 4. Deploy!
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/smithmw7/baseplus-saas)
 
 ### Environment Variables for Production
 
@@ -169,6 +206,9 @@ Make sure to set these in your production environment:
 - `NEXTAUTH_SECRET` - Strong secret key
 - `STRIPE_SECRET_KEY` - Production Stripe key
 - `STRIPE_WEBHOOK_SECRET` - Webhook secret
+- `UPSTASH_REDIS_REST_URL` - Redis URL
+- `UPSTASH_REDIS_REST_TOKEN` - Redis token
+- `RESEND_API_KEY` - Email service key
 
 ## 📊 Monitoring & Analytics
 
@@ -191,10 +231,10 @@ Built-in usage tracking for:
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
@@ -202,9 +242,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- Documentation: [docs.baseplus.com](https://docs.baseplus.com)
-- Issues: [GitHub Issues](https://github.com/your-repo/issues)
-- Discord: [Join our community](https://discord.gg/baseplus)
+- **Documentation**: [MICRO-SAAS-GUIDE.md](./MICRO-SAAS-GUIDE.md)
+- **Deployment Guide**: [DEPLOYMENT.md](./DEPLOYMENT.md)
+- **Issues**: [GitHub Issues](https://github.com/smithmw7/baseplus-saas/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/smithmw7/baseplus-saas/discussions)
 
 ## 🎯 Roadmap
 
@@ -217,6 +258,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Advanced billing features
 - [ ] Integration marketplace
 
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=smithmw7/baseplus-saas&type=Date)](https://star-history.com/#smithmw7/baseplus-saas&Date)
+
 ---
 
 Built with ❤️ for solo developers
+
+**Give it a ⭐ if this project helped you!**
