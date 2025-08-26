@@ -337,7 +337,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Cursor Debug Panel */}
+      {/* Cursor Debug Panel - for general app debugging, errors, and performance monitoring */}
       <CursorDebugPanel isVisible={isDebugVisible} onClose={toggleDebug} />
     </div>
   )

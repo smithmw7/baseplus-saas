@@ -29,7 +29,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           {children}
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* TanStack Query DevTools - for debugging data fetching (development only) */}
+          {process.env.NODE_ENV === 'development' && (
+            <ReactQueryDevtools initialIsOpen={false} />
+          )}
         </ThemeProvider>
       </QueryClientProvider>
     </SessionProvider>
