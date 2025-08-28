@@ -24,7 +24,7 @@ import {
 import Link from 'next/link'
 
 export default function SettingsPage() {
-  const { user, loading, signOut } = useSupabase()
+  const { user, loading, signOut, supabase } = useSupabase()
   const router = useRouter()
   
   // Form states
@@ -65,7 +65,7 @@ export default function SettingsPage() {
     setMessage(null)
 
     try {
-      const { error } = await useSupabase().supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         data: { name: profileForm.name }
       })
 
@@ -91,7 +91,7 @@ export default function SettingsPage() {
     }
 
     try {
-      const { error } = await useSupabase().supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password: passwordForm.newPassword
       })
 
@@ -113,7 +113,7 @@ export default function SettingsPage() {
 
     setIsUpdating(true)
     try {
-      const { error } = await useSupabase().supabase.auth.admin.deleteUser(user?.id || '')
+      const { error } = await supabase.auth.admin.deleteUser(user?.id || '')
       if (error) throw error
       
       await signOut()
