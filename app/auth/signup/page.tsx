@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Zap, Github, Mail } from 'lucide-react'
+import { Zap } from 'lucide-react'
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ export default function SignUpPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { signUp, signInWithGitHub } = useSupabase()
+  const { signUp } = useSupabase()
 
   const handleDemoSignUp = () => {
     setIsLoading(true)
@@ -59,20 +59,7 @@ export default function SignUpPage() {
     }
   }
 
-  const handleGitHubSignUp = async () => {
-    setIsLoading(true)
-    try {
-      const { error } = await signInWithGitHub()
-      if (error) {
-        console.error('GitHub signup error:', error)
-        alert(error.message)
-        setIsLoading(false)
-      }
-    } catch (error) {
-      console.error('GitHub signup error:', error)
-      setIsLoading(false)
-    }
-  }
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -116,16 +103,9 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Social Sign Up */}
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={handleGitHubSignUp} disabled={isLoading}>
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-            <Button variant="outline" disabled>
-              <Mail className="mr-2 h-4 w-4" />
-              Google
-            </Button>
+          {/* Email/Password Sign Up Only */}
+          <div className="text-center text-sm text-muted-foreground">
+            Create your account with email and password
           </div>
 
           {/* Email Sign Up */}

@@ -11,7 +11,6 @@ interface SupabaseContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>
   signUp: (email: string, password: string, name: string) => Promise<{ error: any }>
   signOut: () => Promise<void>
-  signInWithGitHub: () => Promise<{ error: any }>
 }
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
@@ -66,15 +65,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut()
   }
 
-  const signInWithGitHub = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    return { error }
-  }
+
 
   const value = {
     user,
@@ -83,7 +74,6 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signUp,
     signOut,
-    signInWithGitHub,
   }
 
   return (

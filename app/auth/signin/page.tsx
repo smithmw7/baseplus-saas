@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Zap, Github, Mail } from 'lucide-react'
+import { Zap } from 'lucide-react'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { signIn, signInWithGitHub } = useSupabase()
+  const { signIn } = useSupabase()
 
   const handleDemoSignIn = () => {
     setIsLoading(true)
@@ -46,20 +46,7 @@ export default function SignInPage() {
     }
   }
 
-  const handleGitHubSignIn = async () => {
-    setIsLoading(true)
-    try {
-      const { error } = await signInWithGitHub()
-      if (error) {
-        console.error('GitHub sign in error:', error)
-        alert(error.message)
-        setIsLoading(false)
-      }
-    } catch (error) {
-      console.error('GitHub sign in error:', error)
-      setIsLoading(false)
-    }
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
@@ -96,16 +83,9 @@ export default function SignInPage() {
             </div>
           </div>
 
-          {/* Social Sign In */}
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={handleGitHubSignIn} disabled={isLoading}>
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-            <Button variant="outline" disabled>
-              <Mail className="mr-2 h-4 w-4" />
-              Google
-            </Button>
+          {/* Email/Password Sign In Only */}
+          <div className="text-center text-sm text-muted-foreground">
+            Sign in with your email and password
           </div>
 
           {/* Email Sign In */}
