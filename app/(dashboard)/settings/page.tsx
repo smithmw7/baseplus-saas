@@ -124,7 +124,7 @@ export default function SettingsPage() {
     }
   }
 
-  // Show loading state
+  // Render loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -136,7 +136,7 @@ export default function SettingsPage() {
     )
   }
 
-  // Show sign in prompt if not authenticated
+  // Render sign in prompt if not authenticated
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
