@@ -43,6 +43,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  password      String?   // For email/password authentication
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now())
@@ -63,6 +64,10 @@ model User {
   
   // User preferences
   preferences      Json?
+  
+  // Relations
+  subscriptions    Subscription[]
+  usage            Usage[]
 }
 
 model Organization {
@@ -97,6 +102,9 @@ model Project {
   // Usage tracking
   usageCount     Int      @default(0)
   lastUsedAt     DateTime?
+  
+  // Relations
+  usage          Usage[]
 }
 
 model VerificationToken {

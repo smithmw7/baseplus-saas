@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { signIn, getSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -23,13 +24,31 @@ export default function SignInPage() {
     }, 1000)
   }
 
-  const handleEmailSignIn = (e: React.FormEvent) => {
+  const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate loading
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1000)
+    
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        console.error('Sign in error:', result.error)
+        // You could add error handling here
+        setIsLoading(false)
+        return
+      }
+
+      if (result?.ok) {
+        router.push('/dashboard')
+      }
+    } catch (error) {
+      console.error('Sign in error:', error)
+      setIsLoading(false)
+    }
   }
 
   return (

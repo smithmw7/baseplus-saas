@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -27,13 +28,53 @@ export default function SignUpPage() {
     }, 1000)
   }
 
-  const handleEmailSignUp = (e: React.FormEvent) => {
+  const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match')
+      return
+    }
+    
     setIsLoading(true)
-    // Simulate loading
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1000)
+    
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create account')
+      }
+
+      // Sign in the user after successful signup
+      const signInResult = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      })
+
+      if (signInResult?.ok) {
+        router.push('/dashboard')
+      } else {
+        // If auto-signin fails, redirect to signin page
+        router.push('/auth/signin?message=Account created successfully. Please sign in.')
+      }
+    } catch (error) {
+      console.error('Signup error:', error)
+      alert(error instanceof Error ? error.message : 'Failed to create account')
+      setIsLoading(false)
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
