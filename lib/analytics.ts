@@ -45,7 +45,7 @@ export const performance = {
   measurePageLoad: () => {
     if (typeof window !== 'undefined') {
       window.addEventListener('load', () => {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+        const navigation = (performance as any).getEntriesByType('navigation')[0] as PerformanceNavigationTiming
         const loadTime = navigation.loadEventEnd - navigation.loadEventStart
         
         analytics.trackEvent('page_load_time', 'performance', 'page_load', Math.round(loadTime))

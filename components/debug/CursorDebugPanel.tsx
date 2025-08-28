@@ -25,7 +25,7 @@ export function CursorDebugPanel({ isVisible = false, onClose }: DebugPanelProps
     setIsRefreshing(true)
     try {
       const recentLogs = debug.getLogs(50)
-      const recentMetrics = debug.getPerformanceMetrics(50)
+      const recentMetrics: any[] = [] // TODO: Implement performance metrics
       const errors = debug.getErrors()
       
       setLogs(recentLogs)
