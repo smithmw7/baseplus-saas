@@ -4,14 +4,15 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
-interface SupabaseContextType {
-  user: User | null
-  session: Session | null
-  loading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string, name: string) => Promise<{ error: any }>
-  signOut: () => Promise<void>
-}
+       interface SupabaseContextType {
+         user: User | null
+         session: Session | null
+         loading: boolean
+         signIn: (email: string, password: string) => Promise<{ error: any }>
+         signUp: (email: string, password: string, name: string) => Promise<{ error: any }>
+         signOut: () => Promise<void>
+         supabase: any
+       }
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
@@ -75,14 +76,15 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
 
 
-  const value = {
-    user,
-    session,
-    loading,
-    signIn,
-    signUp,
-    signOut,
-  }
+         const value = {
+         user,
+         session,
+         loading,
+         signIn,
+         signUp,
+         signOut,
+         supabase,
+       }
 
   return (
     <SupabaseContext.Provider value={value}>

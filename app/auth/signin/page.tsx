@@ -117,11 +117,18 @@ export default function SignInPage() {
             </Button>
           </form>
 
-          <div className="text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
-            <Link href="/auth/signup" className="text-primary hover:underline">
-              Sign up
-            </Link>
+          <div className="text-center text-sm space-y-2">
+            <div>
+              <Link href="/auth/reset-password" className="text-primary hover:underline">
+                Forgot your password?
+              </Link>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Don't have an account? </span>
+              <Link href="/auth/signup" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>

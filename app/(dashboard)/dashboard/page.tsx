@@ -388,10 +388,12 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Settings
-                    </Button>
+                    <Link href="/settings">
+                      <Button variant="outline" size="sm">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Settings
+                      </Button>
+                    </Link>
                     <Button variant="outline" size="sm">
                       <CreditCard className="h-4 w-4 mr-2" />
                       Billing
