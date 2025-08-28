@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn, getSession } from 'next-auth/react'
+import { useSupabase } from '@/components/providers/supabase-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -15,6 +15,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { signIn, signInWithGitHub } = useSupabase()
 
   const handleDemoSignIn = () => {
     setIsLoading(true)
@@ -29,24 +30,33 @@ export default function SignInPage() {
     setIsLoading(true)
     
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
+      const { error } = await signIn(email, password)
 
-      if (result?.error) {
-        console.error('Sign in error:', result.error)
-        // You could add error handling here
+      if (error) {
+        console.error('Sign in error:', error)
+        alert(error.message)
         setIsLoading(false)
         return
       }
 
-      if (result?.ok) {
-        router.push('/dashboard')
-      }
+      router.push('/dashboard')
     } catch (error) {
       console.error('Sign in error:', error)
+      setIsLoading(false)
+    }
+  }
+
+  const handleGitHubSignIn = async () => {
+    setIsLoading(true)
+    try {
+      const { error } = await signInWithGitHub()
+      if (error) {
+        console.error('GitHub sign in error:', error)
+        alert(error.message)
+        setIsLoading(false)
+      }
+    } catch (error) {
+      console.error('GitHub sign in error:', error)
       setIsLoading(false)
     }
   }
@@ -88,7 +98,7 @@ export default function SignInPage() {
 
           {/* Social Sign In */}
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" disabled>
+            <Button variant="outline" onClick={handleGitHubSignIn} disabled={isLoading}>
               <Github className="mr-2 h-4 w-4" />
               GitHub
             </Button>

@@ -2,8 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from 'next-themes'
+import { SupabaseProvider } from './providers/supabase-provider'
 import { useState } from 'react'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 
   return (
-    <SessionProvider>
+    <SupabaseProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
           attribute="class"
@@ -35,6 +35,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           )}
         </ThemeProvider>
       </QueryClientProvider>
-    </SessionProvider>
+    </SupabaseProvider>
   )
 }

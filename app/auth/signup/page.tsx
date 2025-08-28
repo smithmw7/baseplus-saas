@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { useSupabase } from '@/components/providers/supabase-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -19,6 +19,7 @@ export default function SignUpPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { signUp, signInWithGitHub } = useSupabase()
 
   const handleDemoSignUp = () => {
     setIsLoading(true)
@@ -39,40 +40,36 @@ export default function SignUpPage() {
     setIsLoading(true)
     
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      })
+      const { error } = await signUp(formData.email, formData.password, formData.name)
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create account')
+      if (error) {
+        console.error('Signup error:', error)
+        alert(error.message)
+        setIsLoading(false)
+        return
       }
 
-      // Sign in the user after successful signup
-      const signInResult = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      })
-
-      if (signInResult?.ok) {
-        router.push('/dashboard')
-      } else {
-        // If auto-signin fails, redirect to signin page
-        router.push('/auth/signin?message=Account created successfully. Please sign in.')
-      }
+      // Show success message and redirect to signin
+      alert('Account created successfully! Please check your email to verify your account.')
+      router.push('/auth/signin?message=Account created successfully. Please check your email.')
     } catch (error) {
       console.error('Signup error:', error)
-      alert(error instanceof Error ? error.message : 'Failed to create account')
+      alert('Failed to create account')
+      setIsLoading(false)
+    }
+  }
+
+  const handleGitHubSignUp = async () => {
+    setIsLoading(true)
+    try {
+      const { error } = await signInWithGitHub()
+      if (error) {
+        console.error('GitHub signup error:', error)
+        alert(error.message)
+        setIsLoading(false)
+      }
+    } catch (error) {
+      console.error('GitHub signup error:', error)
       setIsLoading(false)
     }
   }
@@ -121,7 +118,7 @@ export default function SignUpPage() {
 
           {/* Social Sign Up */}
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" disabled>
+            <Button variant="outline" onClick={handleGitHubSignUp} disabled={isLoading}>
               <Github className="mr-2 h-4 w-4" />
               GitHub
             </Button>
