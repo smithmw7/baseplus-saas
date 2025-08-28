@@ -41,6 +41,10 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return { error: { message: 'Supabase not configured. Please add your credentials to .env.local' } }
+    }
+    
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -49,6 +53,10 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (email: string, password: string, name: string) => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return { error: { message: 'Supabase not configured. Please add your credentials to .env.local' } }
+    }
+    
     const { error } = await supabase.auth.signUp({
       email,
       password,
