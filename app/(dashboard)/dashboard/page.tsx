@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { CursorDebugPanel, useCursorDebug } from '@/components/debug/CursorDebugPanel'
 import { debug } from '@/lib/cursor-debug'
+import { useSupabase } from '@/components/providers/supabase-provider'
 import { 
   Users, 
   CreditCard, 
@@ -22,7 +24,8 @@ import {
   Calendar,
   Mail,
   Bell,
-  Bug
+  Bug,
+  User
 } from 'lucide-react'
 
 // Fake data
@@ -56,12 +59,23 @@ const fakeData = {
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const { isDebugVisible, toggleDebug } = useCursorDebug()
+  const { user, session, loading, signOut } = useSupabase()
+  const router = useRouter()
 
-  // Simulate some debug activity
-  useState(() => {
-    debug.info('Dashboard loaded', { user: fakeData.user.name })
-    debug.performance('dashboard-render', 150, { components: 4 })
-  })
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/signin')
+    }
+  }, [user, loading, router])
+
+  // Debug logging
+  useEffect(() => {
+    if (user) {
+      debug.info('Dashboard loaded', { user: user.email })
+      debug.performance('dashboard-render', 150, { components: 4 })
+    }
+  }, [user])
 
   const handleTestError = () => {
     debug.error('Test error triggered by user', { action: 'test-error-button' })
@@ -69,6 +83,33 @@ export default function DashboardPage() {
 
   const handleTestWarning = () => {
     debug.warn('Test warning triggered by user', { action: 'test-warning-button' })
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show sign in prompt if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Please sign in</h1>
+          <p className="text-muted-foreground mb-4">You need to be signed in to view the dashboard.</p>
+          <Link href="/auth/signin">
+            <Button>Sign In</Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -103,15 +144,22 @@ export default function DashboardPage() {
               <Mail className="h-4 w-4" />
             </Button>
             <div className="flex items-center space-x-2">
-              <img 
-                src={fakeData.user.avatar} 
-                alt="Avatar" 
-                className="h-8 w-8 rounded-full"
-              />
-              <div className="hidden md:block">
-                <p className="text-sm font-medium">{fakeData.user.name}</p>
-                <p className="text-xs text-muted-foreground">{fakeData.user.email}</p>
-              </div>
+              {user ? (
+                <>
+                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary-foreground" />
+                  </div>
+                  <div className="hidden md:block">
+                    <p className="text-sm font-medium">{user.user_metadata?.name || 'User'}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={signOut}>
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <div className="text-sm text-muted-foreground">Loading...</div>
+              )}
             </div>
           </div>
         </div>
@@ -120,7 +168,9 @@ export default function DashboardPage() {
       <div className="container mx-auto p-6">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {fakeData.user.name}!</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome back, {user?.user_metadata?.name || user?.email || 'User'}!
+          </h1>
           <p className="text-muted-foreground">
             Here's what's happening with your SaaS platform today.
           </p>
@@ -313,28 +363,45 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Demo Notice */}
-        <div className="mt-8">
-          <Card className="border-dashed">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Zap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
-                <p className="text-muted-foreground mb-4">
-                  This is a demo dashboard with fake data. Set up your environment variables to connect real services.
-                </p>
-                <div className="flex gap-2 justify-center">
-                  <Link href="/auth/signin">
-                    <Button variant="outline">Back to Sign In</Button>
-                  </Link>
-                  <Link href="/">
-                    <Button>View Landing Page</Button>
-                  </Link>
+        {/* User Profile Card */}
+        {user && (
+          <div className="mt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Profile</CardTitle>
+                <CardDescription>
+                  Manage your account settings and preferences
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">{user.user_metadata?.name || 'User'}</h3>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Member since {new Date(user.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Billing
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
 
       {/* Cursor Debug Panel - for general app debugging, errors, and performance monitoring */}
